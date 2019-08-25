@@ -3,6 +3,7 @@ package pl.sda.meetup.dao.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,5 +20,6 @@ public class User {
     private String email;
     private String password;
     @OneToMany(mappedBy = "user")
-    private List<Event> events;
+    private List<Event> events = new ArrayList<>();
+
 }
