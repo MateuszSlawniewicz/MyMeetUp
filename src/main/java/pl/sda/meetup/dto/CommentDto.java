@@ -1,9 +1,10 @@
 package pl.sda.meetup.dto;
 
 import lombok.*;
-import pl.sda.meetup.dao.model.Event;
-import pl.sda.meetup.dao.model.User;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,8 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto {
+
+    @NotNull(message = "not null")
+    @NotBlank(message = "not blank")
+    @Size(max = 500, message = "max 500 letters")
     private String description;
-    private User user;
-    private Event event;
+    private UserLoginDto userLoginDto;
+    private EventDto eventDto;
     private LocalDateTime dateOfCreation;
 }

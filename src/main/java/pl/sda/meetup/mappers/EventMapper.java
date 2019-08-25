@@ -7,12 +7,33 @@ import pl.sda.meetup.dto.EventDto;
 @Component
 public class EventMapper {
 
+    private final UserMapper userMapper;
+
+    public EventMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
+
     public Event fromEventDtoToEvent(EventDto eventDto) {
-        return null;
+        return Event.builder()
+                .description(eventDto.getDescription())
+                .end(eventDto.getEnd())
+                .start(eventDto.getStart())
+                .title(eventDto.getTitle())
+                .user(userMapper.fromUserLoginDtoToUser(eventDto.getUserLoginDto()))
+                .build();
     }
 
     public EventDto fromEventToEventDto(Event event) {
-        return null;
+        return EventDto.builder()
+                .description(event.getDescription())
+                .end(event.getEnd())
+                .start(event.getStart())
+                .title(event.getTitle())
+                .userLoginDto(userMapper.fromUserToUserLoginDto(event.getUser()))
+                .build();
+
+
     }
 
 }
