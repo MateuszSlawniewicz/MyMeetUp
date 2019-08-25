@@ -1,7 +1,6 @@
 package pl.sda.meetup.dto;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +9,9 @@ import javax.validation.constraints.Size;
 
 @Data
 @ToString(exclude = "password")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserLoginDto {
     @NotBlank(message = "not blank")
     @NotNull(message = "not null")

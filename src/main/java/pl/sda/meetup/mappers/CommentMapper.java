@@ -1,14 +1,15 @@
 package pl.sda.meetup.mappers;
 
+import org.springframework.stereotype.Component;
 import pl.sda.meetup.dao.model.Comment;
 import pl.sda.meetup.dto.CommentDto;
-
+@Component
 public class CommentMapper {
-    public static CommentDto fromCommentToCommentDto(Comment comment) {
+    public CommentDto fromCommentToCommentDto(Comment comment) {
         return null;
     }
 
-    public static Comment fromCommentDtoToComment(CommentDto commentDto) {
+    public Comment fromCommentDtoToComment(CommentDto commentDto) {
         return null;
     }
 }
