@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block th:include="~{include/CommonScripts::head}"/>
+</head>
+<body class="text-center">
+<form class="form-signin" th:action="@{/log}" method="post">
+    <h1 class="h3 mb-3 font-weight-normal">Zaloguj się</h1>
+    <input type="email" id="inputEmail" class="form-control" th:field="${form.email}" placeholder="Email">
+    <input type="password" id="inputPassword" class="form-control" th:field="${form.password}" placeholder="Hasło">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Zaloguj się</button>
+</form>
+<th:block th:include="~{include/CommonScripts::end-of-body}"/>
+</body>
+</html>
+

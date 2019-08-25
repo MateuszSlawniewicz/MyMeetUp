@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <th:block th:replace="~{include/CommonScripts::head}"/>
+
+</head>
+<body>
+<div th:replace="fragments/header :: header" ></div>
+<th:block th:replace="~{fragments/menu :: menu}"/>
+<div style="margin-left:210px">
+    <p>hello</p>
+    </div>
+
+<th:block th:replace="~{include/CommonScripts::end-of-body}"/>
+</body>
+</html>
