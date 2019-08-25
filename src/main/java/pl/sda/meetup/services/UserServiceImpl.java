@@ -18,17 +18,12 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
-
     @Override
     public UserLoginDto saveUser(UserLoginDto userLoginDto) {
         User save = userRepository.save(userMapper.fromUserLoginDtoToUser(userLoginDto));
-
         log.info(save.getEmail());
         log.info(save.getPassword());
         log.info(save.getId().toString());
-
         return userMapper.fromUserToUserLoginDto(save);
-
-
     }
 }
