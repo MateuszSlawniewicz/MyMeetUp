@@ -9,7 +9,11 @@ public interface EventService {
 
     List<EventDto> showAllEvents();
 
+    List<EventDto> showAllCurrentEvents();
+
     EventDto updateEvent(EventDto eventDto);
 
     Long deleteEvent(Long id);
+
+    List<EventDto> showAllEventsIgnoreCase(String title);
 }

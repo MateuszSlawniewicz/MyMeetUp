@@ -10,6 +10,8 @@ import pl.sda.meetup.dto.EventDto;
 import pl.sda.meetup.mappers.EventMapper;
 import pl.sda.meetup.mappers.UserMapper;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,8 +45,17 @@ public class EventServiceImpl implements EventService {
     public List<EventDto> showAllEvents() {
         return eventRepository.findAll().stream()
                 .map(eventMapper::fromEventToEventDto)
+                .sorted(Comparator.comparing(EventDto::getStart))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<EventDto> showAllCurrentEvents() {
+        return showAllEvents().stream()
+                .filter(eventDto -> eventDto.getStart().isAfter(LocalDateTime.now()))
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public EventDto updateEvent(EventDto eventDto) {
@@ -54,5 +65,15 @@ public class EventServiceImpl implements EventService {
     @Override
     public Long deleteEvent(Long id) {
         return null;
+    }
+
+    @Override
+    public List<EventDto> showAllEventsIgnoreCase(String title) {
+        if (title == null) {
+            return showAllEvents();
+        }
+        return eventRepository.findAllByTitleIgnoreCase(title).stream()
+                .map(eventMapper::fromEventToEventDto)
+                .collect(Collectors.toList());
     }
 }

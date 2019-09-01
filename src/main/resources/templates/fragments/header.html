@@ -10,4 +10,24 @@
         <a sec:authorize="isAuthenticated()" href="/add-event" class="btn btn-danger">Dodaj Wydarzenie</a>
     </nav>
 </div>
+<div th:fragment="search">
+    <form th:action="@{/search}" method="get">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input th:value="${title}" type="text" class="form-control" id="title" name="title"
+                   placeholder="Search....">
+        </div>
+        <div class="form-group">
+            <label for="type">Rodzaj: </label>
+            <select class="form-control" id="type" name="type" th:value="${type}">
+                <option value="future">Przyszłe</option>
+                <option value="current_and_future">Trwające i przyszłe</option>
+                <option value="all">Wszystkie</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Szukaj</button>
+    </form>
+</div>
+
+
 </body>
