@@ -1,11 +1,13 @@
 package pl.sda.meetup.dto;
 
 import lombok.*;
+import pl.sda.meetup.dao.model.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Data
 @ToString(exclude = "password")
@@ -28,7 +30,7 @@ public class UserLoginDto {
             = "Password must be between 8 and 30 characters")
     private String password;
 
-
+    private Set<Role> roles;
 
 
 }

@@ -21,4 +21,5 @@ public class CommentDto {
     private UserLoginDto userLoginDto;
     private EventDto eventDto;
     private LocalDateTime dateOfCreation;
+    private Long id;
 }

@@ -20,6 +20,7 @@ public class CommentMapper {
                 .description(comment.getDescription())
                 .userLoginDto(userMapper.fromUserToUserLoginDto(comment.getUser()))
                 .eventDto(eventMapper.fromEventToEventDto(comment.getEvent()))
+                .id(comment.getId())
                 .build();
 
     }

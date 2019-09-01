@@ -1,11 +1,13 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
 </head>
 <body>
 <div th:fragment="header">
     <nav class="navbar navbar-dark bg-dark navbar-static-top">
-        <a href="/log" class="btn btn-primary">Zaloguj</a>
-        <a href="/register" class="btn btn-danger">Rejestracja</a>
+        <a sec:authorize="!isAuthenticated()" href="/log" class="btn btn-primary">Zaloguj</a>
+        <a sec:authorize="!isAuthenticated()" href="/register" class="btn btn-danger">Rejestracja</a>
+        <span sec:authentication="name"></span>
+        <a sec:authorize="isAuthenticated()" href="/add-event" class="btn btn-danger">Dodaj Wydarzenie</a>
     </nav>
 </div>
 </body>

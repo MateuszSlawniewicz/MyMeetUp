@@ -23,12 +23,6 @@ public class UserController {
     }
 
 
-    @GetMapping("/")
-    public String initStartPage() {
-        return "index";
-    }
-
-
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("userLoginDto", new UserLoginDto());
@@ -50,16 +44,11 @@ public class UserController {
 
 
     @GetMapping("/log")
-    public String showLoginForm(Model model) {
-        model.addAttribute("form", new UserLoginDto());
+    public String showLoginForm() {
         return "loginForm";
     }
 
-    @PostMapping("/log")
-    public String login(UserLoginDto uld, BindingResult bindingResult) {
-        log.info(uld.getEmail());
-        log.info(uld.getPassword());
-        return "index";
-    }
+
+
 
 }

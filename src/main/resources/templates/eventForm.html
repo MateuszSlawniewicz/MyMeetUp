@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Form</title>
+    <th:block th:replace="~{include/CommonScripts::head}"/>
+</head>
+<body>
+<form th:action="@{/add-event}" method="post" th:object="${eventDto}">
+    <div class="form-group">
+        <textarea id="description" name="description" rows="10" cols="30" placeholder="Opisz wydarzenie" th:field="*{description}">The cat was playing in the garden.</textarea>
+        <label for="description" class="alert alert-danger" role="alert" th:errors="*{description}"></label>
+        <input id="title" name="title" type="text" th:field="*{title}"
+               placeholder="Tytuł"/>
+        <label for="title" class="alert alert-danger" role="alert" th:errors="*{title}"></label>
+        <input id="start" name="start" type="datetime-local" th:field="*{start}" placeholder="YYYY-MM-DD hh:mm:ss" class="input-sm form-control"/>
+        <label for="start" class="alert alert-danger" role="alert" th:errors="*{start}"></label>
+        <input id="end" name="end" type="datetime-local" th:field="*{end}" placeholder="YYYY-MM-DD hh:mm:ss" class="input-sm form-control"/>
+        <label for="end" class="alert alert-danger" role="alert" th:errors="*{end}"></label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+<th:block th:include="~{include/CommonScripts::end-of-body}"/>
+</body>
+</html>

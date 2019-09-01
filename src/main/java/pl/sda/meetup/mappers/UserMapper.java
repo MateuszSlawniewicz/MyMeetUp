@@ -19,8 +19,9 @@ public class UserMapper {
     public User fromUserLoginDtoToUser(UserLoginDto userLoginDto) {
         return User.builder()
                 .email(userLoginDto.getEmail())
-                .name(userLoginDto.getEmail())
+                .name(userLoginDto.getName())
                 .password(passwordEncoder.encode(userLoginDto.getPassword()))
+                .roles(userLoginDto.getRoles())
                 .build();
     }
 
@@ -28,6 +29,8 @@ public class UserMapper {
         return UserLoginDto.builder()
                 .email(user.getEmail())
                 .name(user.getName())
+                .password(user.getPassword())
+                .roles(user.getRoles())
                 .build();
     }
 

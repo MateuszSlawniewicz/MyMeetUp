@@ -5,8 +5,11 @@ import pl.sda.meetup.dto.EventDto;
 import java.util.List;
 
 public interface EventService {
-   EventDto saveEvent(EventDto eventDto);
-   List<EventDto> showAllEvents();
+    EventDto saveEvent(EventDto eventDto, String user);
+
+    List<EventDto> showAllEvents();
+
     EventDto updateEvent(EventDto eventDto);
+
     Long deleteEvent(Long id);
 }

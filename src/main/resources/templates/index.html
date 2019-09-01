@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,11 +8,18 @@
 
 </head>
 <body>
-<div th:replace="fragments/header :: header" ></div>
-<th:block th:replace="~{fragments/menu :: menu}"/>
-<div style="margin-left:210px">
-    <p>hello</p>
-    </div>
+<div th:replace="fragments/header :: header"></div>
+<div th:each="eventDto : ${eventsDto}" >
+    <h1 th:text="${eventDto.getTitle()}"></h1>
+    <ul class="list-group">
+        <li class="list-group-item" th:text="${eventDto.description}" th:maxlength="50">Description</li>
+        <li class="list-group-item" td th:text="${eventDto.getStart()}">Date</li>
+        <li class="list-group-item" td th:text="'from ' + ${eventDto.getStart()} + 'to '+ ${eventDto.getEnd()}">Date</li>
+    </ul>
+</div>
+
+
+
 
 <th:block th:replace="~{include/CommonScripts::end-of-body}"/>
 </body>
