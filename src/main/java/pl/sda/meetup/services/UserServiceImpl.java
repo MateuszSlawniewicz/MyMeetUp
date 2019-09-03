@@ -7,9 +7,11 @@ import pl.sda.meetup.dao.model.User;
 import pl.sda.meetup.dao.repositories.RoleRepository;
 import pl.sda.meetup.dao.repositories.UserRepository;
 import pl.sda.meetup.dto.UserLoginDto;
+import pl.sda.meetup.exceptions.UserException;
 import pl.sda.meetup.mappers.UserMapper;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,6 +30,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserLoginDto saveUser(UserLoginDto userLoginDto) {
+        userRepository.findByEmail(userLoginDto.getEmail())
+                .ifPresent(user -> {
+                    throw new UserException("user already exist");
+                    //todo handler
+                });
+
         Role role = new Role();
         role.setName("RANDOM_USER");
         Role savedRole = roleRepository.save(role);
@@ -40,5 +48,12 @@ public class UserServiceImpl implements UserService {
         log.info(save.getId().toString());
         save.getRoles().forEach(e -> log.info(e.getName()));
         return userMapper.fromUserToUserLoginDto(save);
+    }
+
+    @Override
+    public UserLoginDto findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(userMapper::fromUserToUserLoginDto)
+                .orElseThrow(() -> new UserException("user not found"));
     }
 }

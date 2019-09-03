@@ -11,9 +11,12 @@ public interface EventService {
 
     List<EventDto> showAllCurrentEvents();
 
-    EventDto updateEvent(EventDto eventDto);
-
-    Long deleteEvent(Long id);
-
     List<EventDto> showAllEventsIgnoreCase(String title);
+
+    List<EventDto> findEventsWithSpecialConditions(String title, String type);
+
+    EventDto getEventById(Long id);
+
+
+
 }

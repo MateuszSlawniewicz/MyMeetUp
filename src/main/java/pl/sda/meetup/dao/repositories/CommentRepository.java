@@ -7,5 +7,5 @@ import pl.sda.meetup.dao.model.Event;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findAllByEvent(Event event);
+    List<Comment> findAllByEventOrderByDateOfCreation(Event event);
 }

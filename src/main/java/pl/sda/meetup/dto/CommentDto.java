@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentDto {
 
-    @NotNull(message = "not null")
-    @NotBlank(message = "not blank")
-    @Size(max = 500, message = "max 500 letters")
     private String description;
     private UserLoginDto userLoginDto;
     private EventDto eventDto;

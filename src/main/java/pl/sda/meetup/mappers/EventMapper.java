@@ -26,6 +26,7 @@ public class EventMapper {
 
     public EventDto fromEventToEventDto(Event event) {
         return EventDto.builder()
+                .id(event.getId())
                 .description(event.getDescription())
                 .end(event.getEnd())
                 .start(event.getStart())

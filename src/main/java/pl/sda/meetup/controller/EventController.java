@@ -9,13 +9,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.sda.meetup.dto.EventDto;
 import pl.sda.meetup.mappers.UserMapper;
+import pl.sda.meetup.services.CommentService;
 import pl.sda.meetup.services.EventService;
 import pl.sda.meetup.services.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -24,11 +23,13 @@ public class EventController {
     private final EventService eventService;
     private final UserService userService;
     private final UserMapper userMapper;
+    private final CommentService commentService;
 
-    public EventController(EventService eventService, UserService userService, UserMapper userMapper) {
+    public EventController(EventService eventService, UserService userService, UserMapper userMapper, CommentService commentService) {
         this.eventService = eventService;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.commentService = commentService;
     }
 
 
@@ -72,27 +73,19 @@ public class EventController {
     public String listEvents(@RequestParam(name = "title") String title, @RequestParam(name = "type") String type, Model model) {
         log.info(title);
         log.info(type);
-        List<EventDto> eventDtos = eventService.showAllEventsIgnoreCase(title);
-        switch (type) {
-            case "future":
-                model.addAttribute("eventsDto", eventDtos.stream()
-                        .filter(e -> e.getStart().isAfter(LocalDateTime.now()))
-                        .collect(Collectors.toList()));
-                break;
-            case "current_and_future":
-                model.addAttribute("eventsDto", eventDtos.stream()
-                        .filter(e -> e.getEnd().isAfter(LocalDateTime.now()))
-                        .collect(Collectors.toList()));
-                break;
-            default:
-                model.addAttribute("eventsDto", eventDtos);
-                break;
-        }
+        List<EventDto> events = eventService.findEventsWithSpecialConditions(title, type);
+        model.addAttribute("eventsDto", events);
         model.addAttribute("title", title);
         model.addAttribute("type", type);
         return "eventResult";
 
     }
 
-
+    @GetMapping("/search/event/{eventId}")
+    public String showEventDetails(@PathVariable Long eventId, Model model) {
+        log.info(eventId.toString());
+        model.addAttribute("eventDto", eventService.getEventById(eventId));
+        model.addAttribute("comments", commentService.showAllComments(eventId));
+        return "eventView";
+    }
 }

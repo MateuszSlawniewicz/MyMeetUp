@@ -7,6 +7,8 @@ import pl.sda.meetup.dao.model.User;
 import pl.sda.meetup.dao.repositories.EventRepository;
 import pl.sda.meetup.dao.repositories.UserRepository;
 import pl.sda.meetup.dto.EventDto;
+import pl.sda.meetup.exceptions.EventException;
+import pl.sda.meetup.exceptions.UserException;
 import pl.sda.meetup.mappers.EventMapper;
 import pl.sda.meetup.mappers.UserMapper;
 
@@ -34,7 +36,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDto saveEvent(EventDto eventDto, String user) {
-        User userFromDB = userRepository.findByEmail(user);
+        User userFromDB = userRepository.findByEmail(user)
+                .orElseThrow(() -> new UserException("user not found"));
         Event event = eventMapper.fromEventDtoToEvent(eventDto);
         event.setUser(userFromDB);
         Event savedEvent = eventRepository.save(event);
@@ -58,16 +61,6 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public EventDto updateEvent(EventDto eventDto) {
-        return null;
-    }
-
-    @Override
-    public Long deleteEvent(Long id) {
-        return null;
-    }
-
-    @Override
     public List<EventDto> showAllEventsIgnoreCase(String title) {
         if (title == null) {
             return showAllEvents();
@@ -75,5 +68,42 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findAllByTitleIgnoreCase(title).stream()
                 .map(eventMapper::fromEventToEventDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EventDto> findEventsWithSpecialConditions(String title, String type) {
+
+        List<EventDto> eventDtos = showAllEvents();
+
+        switch (type) {
+            case "future":
+                eventDtos = eventDtos.stream()
+                        .filter(e -> e.getStart().isAfter(LocalDateTime.now()))
+                        .collect(Collectors.toList());
+                break;
+            case "current_and_future":
+                eventDtos = eventDtos.stream()
+                        .filter(e -> e.getEnd().isAfter(LocalDateTime.now()))
+                        .collect(Collectors.toList());
+                break;
+            default:
+                break;
+        }
+        if (eventDtos.isEmpty()) {
+            throw new EventException("Event not found");
+            //prepare handler
+        }
+        return eventDtos.stream()
+                .filter(e -> e.getTitle().toLowerCase().contains(title.toLowerCase()))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public EventDto getEventById(Long id) {
+        return eventRepository.findById(id)
+                .map(eventMapper::fromEventToEventDto)
+                .orElseThrow(() -> new EventException("event not found"));
+        //todo handler
     }
 }

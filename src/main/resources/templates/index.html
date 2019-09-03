@@ -10,23 +10,9 @@
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
-<div th:replace="fragments/header :: search"></div>
+<div th:replace="fragments/search :: search"></div>
 
-<div>
-    <div th:each="eventDto : ${eventsDto}" class="border" style="margin: 2%;
-   width: 50% !important; ">
-        <label style="" for="list" th:text="${eventDto.getTitle()}">Title</label>
-        <ul id="list" class="list-group">
-            <li class="list-group-item" th:text="${eventDto.description.substring(0,50)}"
-                style="word-wrap: break-word">Description
-            </li>
-            <li class="list-group-item"
-                th:text="'from: ' + ${eventDto.getStart()} + ' to: '+ ${eventDto.getEnd()}">
-                Date
-            </li>
-        </ul>
-    </div>
-</div>
+<div th:replace="fragments/eventsList :: events"></div>
 
 
 <th:block th:replace="~{include/CommonScripts::end-of-body}"/>
