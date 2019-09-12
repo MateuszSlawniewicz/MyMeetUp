@@ -1,7 +1,6 @@
 package pl.sda.meetup.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.sda.meetup.dao.model.Comment;
 import pl.sda.meetup.dao.model.Event;
@@ -10,8 +9,6 @@ import pl.sda.meetup.dao.repositories.CommentRepository;
 import pl.sda.meetup.dao.repositories.EventRepository;
 import pl.sda.meetup.dao.repositories.UserRepository;
 import pl.sda.meetup.dto.CommentDto;
-import pl.sda.meetup.dto.EventDto;
-import pl.sda.meetup.dto.UserLoginDto;
 import pl.sda.meetup.exceptions.CommentTableExcepion;
 import pl.sda.meetup.exceptions.EventException;
 import pl.sda.meetup.exceptions.UserException;
@@ -29,14 +26,14 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
-    private final EventMapper eventMapper;
+    private final UserContextHolder userContextHolder;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper, EventMapper eventMapper, UserRepository userRepository, EventRepository eventRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper, UserContextHolder userContextHolder, UserRepository userRepository, EventRepository eventRepository) {
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
-        this.eventMapper = eventMapper;
+        this.userContextHolder = userContextHolder;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
     }
@@ -56,7 +53,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> showAllComments(Long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventException("there is no event with id: " + eventId));;
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventException("there is no event with id: " + eventId));
+        ;
         return commentRepository.findAllByEventOrderByDateOfCreation(event)
                 .stream()
                 .map(commentMapper::fromCommentToCommentDto)
@@ -93,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     private User getUserFromContext() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = userContextHolder.getLoggedUserName();
         return userRepository.findByEmail(email).orElseThrow(() -> new UserException("user dont exist"));
     }
 

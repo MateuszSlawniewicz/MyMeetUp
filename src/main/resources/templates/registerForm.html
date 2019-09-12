@@ -4,31 +4,38 @@
     <title>Registration</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <th:block th:include="~{include/CommonScripts::head}"/>
-
+    <style>
+        [class*="span"].centred {
+            margin-left: auto;
+            margin-right: auto;
+            float: none;
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/register}" th:object="${userLoginDto}" method="post">
-    <div class="form-group">
-        <table>
-            <tr>
-                <td>Email:</td>
-                <td><input type="email" th:field="*{email}"/></td>
-                <td class="alert alert-danger" role="alert" th:errors="*{email}"></td>
-            </tr>
-            <tr>
-                <td>Password:</td>
-                <td><input type="password" th:field="*{password}"/></td>
-                <td class="alert alert-danger" role="alert" th:errors="*{password}"></td>
-            </tr>
-            <tr>
-                <td>Username:</td>
-                <td><input type="text" th:field="*{name}"/></td>
-                <td class="alert alert-danger" role="alert" th:errors="*{name}"></td>
-            </tr>
-        </table>
+
+<div class="container">
+    <div class="row">
+        <div class="span9 centred">
+            <form class="form-signin" th:action="@{/register}" th:object="${userLoginDto}" method="post">
+                <div class="form-group">
+                    <h3>Register form:</h3>
+                    <input id="email" type="email" name="email" class="form-control" placeholder="Enter email..."
+                           th:field="*{email}">
+                    <label for="email" th:errors="*{email}"></label>
+                    <input id="password" type="password" name="password" class="form-control"
+                           placeholder="Enter password..." th:field="*{password}">
+                    <label for="password" th:errors="*{password}"></label>
+                    <input id="name" type="text" name="name" th:field="*{name}" class="form-control"
+                           placeholder="Enter name...">
+                    <label for="name" th:errors="*{name}"></label>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+</div>
+
 <th:block th:include="~{include/CommonScripts::end-of-body}"/>
 </body>
 </html>

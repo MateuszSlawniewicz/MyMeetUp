@@ -21,14 +21,10 @@ import java.util.List;
 @Controller
 public class EventController {
     private final EventService eventService;
-    private final UserService userService;
-    private final UserMapper userMapper;
     private final CommentService commentService;
 
-    public EventController(EventService eventService, UserService userService, UserMapper userMapper, CommentService commentService) {
+    public EventController(EventService eventService, CommentService commentService) {
         this.eventService = eventService;
-        this.userService = userService;
-        this.userMapper = userMapper;
         this.commentService = commentService;
     }
 
@@ -45,16 +41,7 @@ public class EventController {
         if (bindingResult.hasErrors()) {
             return "eventForm";
         }
-        String userName;
-        Object principal = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-        if (principal instanceof UserDetails) {
-            userName = ((UserDetails) principal).getUsername();
-        } else {
-            userName = principal.toString();
-        }
-        eventService.saveEvent(eventDto, userName);
+        eventService.saveEvent(eventDto);
         return "redirect:/";
     }
 
@@ -85,7 +72,27 @@ public class EventController {
     public String showEventDetails(@PathVariable Long eventId, Model model) {
         log.info(eventId.toString());
         model.addAttribute("eventDto", eventService.getEventById(eventId));
+        return prepareCommentsAndCheckIfUserIsParticipant(eventId, model);
+    }
+
+    @GetMapping("/search/event/{eventId}/deleteparticipation")
+    public String deleteParticipation(@PathVariable Long eventId, Model model) {
+        EventDto eventDto = eventService.deleteParticipation(eventId);
+        model.addAttribute("eventDto", eventDto);
+        return prepareCommentsAndCheckIfUserIsParticipant(eventId, model);
+    }
+
+    @GetMapping("/search/event/{eventId}/participate")
+    public String declareParticipation(@PathVariable Long eventId, Model model) {
+        EventDto eventDto = eventService.saveParticipation(eventId);
+        model.addAttribute("eventDto", eventDto);
+        return prepareCommentsAndCheckIfUserIsParticipant(eventId, model);
+
+    }
+
+    private String prepareCommentsAndCheckIfUserIsParticipant(@PathVariable Long eventId, Model model) {
         model.addAttribute("comments", commentService.showAllComments(eventId));
+        model.addAttribute("isParticipant", eventService.checkIfUserParticipant(eventId));
         return "eventView";
     }
 }

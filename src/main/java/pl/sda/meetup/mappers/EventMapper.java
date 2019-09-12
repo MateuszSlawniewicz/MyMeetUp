@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import pl.sda.meetup.dao.model.Event;
 import pl.sda.meetup.dto.EventDto;
 
+import java.util.stream.Collectors;
+
 
 @Component
 public class EventMapper {
@@ -31,6 +33,9 @@ public class EventMapper {
                 .end(event.getEnd())
                 .start(event.getStart())
                 .title(event.getTitle())
+                .participants(event.getParticipants().stream()
+                        .map(userMapper::fromUserToUserLoginDto)
+                        .collect(Collectors.toSet()))
                 .userLoginDto(userMapper.fromUserToUserLoginDto(event.getUser()))
                 .build();
 

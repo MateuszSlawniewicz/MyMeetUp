@@ -10,11 +10,12 @@ import pl.sda.meetup.dto.EventDto;
 import pl.sda.meetup.exceptions.EventException;
 import pl.sda.meetup.exceptions.UserException;
 import pl.sda.meetup.mappers.EventMapper;
-import pl.sda.meetup.mappers.UserMapper;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,24 +23,26 @@ import java.util.stream.Collectors;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-    private final UserMapper userMapper;
+    private final UserContextHolder userContextHolder;
     private final UserRepository userRepository;
 
-
-    public EventServiceImpl(EventRepository eventRepository, EventMapper eventMapper, UserMapper userMapper, UserRepository userRepository) {
+    public EventServiceImpl(EventRepository eventRepository, EventMapper eventMapper, UserRepository userRepository, UserContextHolder userContextHolder) {
         this.eventRepository = eventRepository;
         this.eventMapper = eventMapper;
-        this.userMapper = userMapper;
+        this.userContextHolder = userContextHolder;
         this.userRepository = userRepository;
     }
 
 
     @Override
-    public EventDto saveEvent(EventDto eventDto, String user) {
-        User userFromDB = userRepository.findByEmail(user)
-                .orElseThrow(() -> new UserException("user not found"));
+    public EventDto saveEvent(EventDto eventDto) {
+        User userFromDB = userRepository.findByEmail(userContextHolder.getLoggedUserName())
+                .orElseThrow(() -> new UserException("usper not found"));
         Event event = eventMapper.fromEventDtoToEvent(eventDto);
         event.setUser(userFromDB);
+        Set<User> participants = new HashSet<>();
+        participants.add(userFromDB);
+        event.setParticipants(participants);
         Event savedEvent = eventRepository.save(event);
         return eventMapper.fromEventToEventDto(savedEvent);
     }
@@ -105,5 +108,39 @@ public class EventServiceImpl implements EventService {
                 .map(eventMapper::fromEventToEventDto)
                 .orElseThrow(() -> new EventException("event not found"));
         //todo handler
+    }
+
+    @Override
+    public Boolean checkIfUserParticipant(Long eventId) {
+        String loggedUserName = userContextHolder.getLoggedUserName();
+        return eventRepository.findById(eventId)
+                .map(Event::getParticipants)
+                .map(e -> e.contains(userRepository.findByEmail(loggedUserName).orElseThrow(() -> new UserException("Wrong user"))))
+                .orElseThrow(() -> new EventException("event dont exist"));
+    }
+
+    @Override
+    public EventDto saveParticipation(Long eventId) {
+        String loggedUserName = userContextHolder.getLoggedUserName();
+        User user = userRepository.findByEmail(loggedUserName).orElseThrow(() -> new UserException("Wrong user"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventException("evet dont exist"));
+        Set<User> participants = event.getParticipants();
+        boolean isAddedToEvent = participants.add(user);
+        log.info("is user added to event : " + isAddedToEvent);
+        event.setParticipants(participants);
+        Event savedEvent = eventRepository.save(event);
+        return eventMapper.fromEventToEventDto(savedEvent);
+
+
+    }
+
+    @Override
+    public EventDto deleteParticipation(Long eventId) {
+        String loggedUserName = userContextHolder.getLoggedUserName();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventException("Event not found"));
+        Set<User> participants = event.getParticipants();
+        participants.removeIf(e -> e.getEmail().equals(loggedUserName));
+        event.setParticipants(participants);
+        return eventMapper.fromEventToEventDto(eventRepository.save(event));
     }
 }
