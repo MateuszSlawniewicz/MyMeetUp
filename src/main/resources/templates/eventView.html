@@ -9,9 +9,8 @@
 </head>
 <body>
 
-
 <div th:object="${eventDto}">
-    <div class="card" style="width: 18rem;">
+    <div class="card mx-auto" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title" th:text="*{getTitle()}">Event title</h5>
             <h6 class="card-subtitle mb-2 text-muted" th:text="*{getUserDto().getName()}">User name</h6>
@@ -27,10 +26,13 @@
                 </form>
             </div>
             <div th:each="comment : ${comments}">
+                <hr>
                 <h5 th:text="${comment.description}">...</h5>
-                <h5 th:text="${comment.getUserDto().getName()}">...</h5>
-                <h6 th:text="${comment.getDateOfCreation()}"></h6>
+                <h4 th:text="${comment.getUserDto().getName()}">...</h4>
+                <h6 th:text="${comment.getDateOfCreation().toString().replace('T', ' ')}"></h6>
             </div>
+            <hr>
+            <h5>Users interested: </h5>
             <div class="form-group" th:each="userDto : ${eventDto.getParticipants()}">
                 <p th:text="${userDto.getName()}"></p>
             </div>

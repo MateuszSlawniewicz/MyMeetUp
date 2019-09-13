@@ -8,6 +8,7 @@ import pl.sda.meetup.exceptions.AuthenticationException;
 import pl.sda.meetup.exceptions.EventException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 
 @ControllerAdvice
 @Slf4j
@@ -22,6 +23,15 @@ public class ControllerForHandlingException {
     @ExceptionHandler(AuthenticationException.class)
     public String authExceptionHandling(HttpServletRequest req, Exception ex, Model model) {
         return handleException(req, ex, model);
+    }
+
+
+    @ExceptionHandler(SQLException.class)
+    public String sqlExceptionHandling(HttpServletRequest req, Exception ex, Model model) {
+
+        log.error("Request: " + req.getRequestURL() + " raised " + ex.getMessage());
+        model.addAttribute("exception", "Wrong date format, try again");
+        return "exceptionForm";
     }
 
 

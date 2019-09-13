@@ -1,37 +1,23 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-
-    <style>
-        [class*="span"].centred {
-            margin-left: auto;
-            margin-right: auto;
-            float: none;
-        }
-    </style>
 </head>
 
 <body>
 <div th:fragment="events">
     <div th:each="eventDto : ${eventsDto}">
-        <div class="container">
-            <div class="row">
-                <div class="span9 centred">
-
-                    <label for="list" th:text="${eventDto.getTitle()}">Title</label>
-                    <ul id="list" class="list-group">
-                        <li class="list-group-item" th:text="${eventDto.description.substring(0,50)}"
-                            style="word-wrap: break-word">Description
-                        </li>
-                        <li class="list-group-item"
-                            th:text="'from: ' + ${eventDto.getStart()} + ' to: '+ ${eventDto.getEnd()}">
-                            Date
-                        </li>
-                    </ul>
-                    <a th:href="@{'/search/event/' + ${eventDto.getId()}}">Details</a>
-                </div>
-            </div>
+        <div class="container mx-auto" style="">
+            <label for="list" th:text="${eventDto.getTitle()}">Title</label>
+            <ul id="list" class="list-group">
+                <li class="list-group-item" th:text="${eventDto.description.substring(0,50)}"
+                    style="word-wrap: break-word">Description
+                </li>
+                <li class="list-group-item"
+                    th:text="'from: ' + ${eventDto.getStart().toString().replace('T', ' ')} + ' to: '+ ${eventDto.getEnd().toString().replace('T', ' ')}">
+                    Date
+                </li>
+            </ul>
+            <a th:href="@{'/search/event/' + ${eventDto.getId()}}">Details</a>
         </div>
     </div>
-
 </div>
 </body>
