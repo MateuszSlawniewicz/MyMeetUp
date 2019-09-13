@@ -3,7 +3,10 @@ package pl.sda.meetup.dto;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -20,7 +23,7 @@ public class EventDto {
     private String title;
     @Size(min = 20, message = "min 20 letters")
     private String description;
-    private UserLoginDto userLoginDto;
+    private UserDto userDto;
 
     @Future(message = "wrong date")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -30,8 +33,7 @@ public class EventDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime end;
 
-    private Set<UserLoginDto> participants;
-
+    private Set<UserDto> participants;
 
 
 }

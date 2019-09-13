@@ -4,23 +4,41 @@
     <meta charset="UTF-8">
     <title>Event Form</title>
     <th:block th:replace="~{include/CommonScripts::head}"/>
+    <style>
+        [class*="span"].centred {
+            margin-left: auto;
+            margin-right: auto;
+            float: none;
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/add-event}" method="post" th:object="${eventDto}">
-    <div class="form-group">
-        <textarea id="description" name="description" rows="10" cols="30" placeholder="Opisz wydarzenie" th:field="*{description}">The cat was playing in the garden.</textarea>
-        <label for="description" class="alert alert-danger" role="alert" th:errors="*{description}"></label>
-        <input id="title" name="title" type="text" th:field="*{title}"
-               placeholder="Tytuł"/>
-        <label for="title" class="alert alert-danger" role="alert" th:errors="*{title}"></label>
-        <input id="start" name="start" type="datetime-local" th:field="*{start}" placeholder="YYYY-MM-DD hh:mm:ss" class="input-sm form-control"/>
-        <label for="start" class="alert alert-danger" role="alert" th:errors="*{start}"></label>
-        <input id="end" name="end" type="datetime-local" th:field="*{end}" placeholder="YYYY-MM-DD hh:mm:ss" class="input-sm form-control"/>
-        <label for="end" class="alert alert-danger" role="alert" th:errors="*{end}"></label>
+<div class="container">
+    <div class="row">
+        <div class="span9 centred">
+            <form th:action="@{/add-event}" method="post" th:object="${eventDto}">
+                <div class="form-group">
+                    <h1 class="h3 mb-3 font-weight-normal">Describe your event:</h1>
+                    <input id="title" name="title" type="text" th:field="*{title}"
+                           placeholder="Title"/>
+                    <label for="title" class="alert alert-danger" role="alert" th:errors="*{title}"></label>
+                    <input id="start" name="start" type="datetime-local" th:field="*{start}"
+                           placeholder="Date from: YYYY-MM-DD hh:mm:ss"
+                           class="input-sm form-control"/>
+                    <label for="start" class="alert alert-danger" role="alert" th:errors="*{start}"></label>
+                    <input id="end" name="end" type="datetime-local" th:field="*{end}"
+                           placeholder="Date to: YYYY-MM-DD hh:mm:ss"
+                           class="input-sm form-control"/>
+                    <label for="end" class="alert alert-danger" role="alert" th:errors="*{end}"></label>
+                    <textarea id="description" name="description" rows="10" cols="30" placeholder="Description..."
+                              th:field="*{description}">The cat was playing in the garden.</textarea>
+                    <label for="description" class="alert alert-danger" role="alert" th:errors="*{description}"></label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
+</div>
 
 <th:block th:include="~{include/CommonScripts::end-of-body}"/>
 </body>

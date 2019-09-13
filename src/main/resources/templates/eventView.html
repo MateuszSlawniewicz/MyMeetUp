@@ -14,34 +14,34 @@
     <div class="card" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title" th:text="*{getTitle()}">Event title</h5>
-            <h6 class="card-subtitle mb-2 text-muted" th:text="*{getUserLoginDto().getName()}">User name</h6>
+            <h6 class="card-subtitle mb-2 text-muted" th:text="*{getUserDto().getName()}">User name</h6>
             <p class="card-text" th:text="*{getDescription()}"> Description </p>
             <div sec:authorize="isAuthenticated()">
                 <form th:action="@{'/comment/' + ${eventDto.getId()}}" method="post">
                     <div class="form-group">
-                        <label for="comment">Twój komentarz:</label>
+                        <label for="comment">Comment:</label>
                         <br/>
                         <input type="text" name="comment" id="comment"/>
                     </div>
-                    <button type="submit" class="btn btn-primary">Dodaj</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
                 </form>
             </div>
             <div th:each="comment : ${comments}">
                 <h5 th:text="${comment.description}">...</h5>
-                <h5 th:text="${comment.getUserLoginDto().getName()}">...</h5>
+                <h5 th:text="${comment.getUserDto().getName()}">...</h5>
                 <h6 th:text="${comment.getDateOfCreation()}"></h6>
             </div>
-            <div class="form-group" th:each="userLoginDto : ${eventDto.getParticipants()}">
-                <p th:text="${userLoginDto.getName()}"></p>
+            <div class="form-group" th:each="userDto : ${eventDto.getParticipants()}">
+                <p th:text="${userDto.getName()}"></p>
             </div>
             <div sec:authorize="isAuthenticated()">
 
                 <a th:if="${isParticipant}" th:href="@{'/search/event/' + ${eventDto.getId()} + '/deleteparticipation'}"
-                   class="card-link">Wypisz mnie</a>
+                   class="card-link">Unsubscribe</a>
 
 
                 <a th:unless="${isParticipant}" th:href="@{'/search/event/' + ${eventDto.getId()} + '/participate'}"
-                   class="card-link">Wez udzial</a>
+                   class="card-link">Join</a>
             </div>
         </div>
 

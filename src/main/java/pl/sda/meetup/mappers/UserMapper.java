@@ -3,6 +3,7 @@ package pl.sda.meetup.mappers;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.sda.meetup.dao.model.User;
+import pl.sda.meetup.dto.UserDto;
 import pl.sda.meetup.dto.UserLoginDto;
 
 @Component
@@ -32,6 +33,15 @@ public class UserMapper {
                 .password(user.getPassword())
                 .roles(user.getRoles())
                 .build();
+    }
+
+    public UserDto fromUserToUserDto(User user) {
+        return UserDto.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .roles(user.getRoles())
+                .build();
+
     }
 
 }

@@ -29,13 +29,15 @@ public class CommentServiceImpl implements CommentService {
     private final UserContextHolder userContextHolder;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
 
-    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper, UserContextHolder userContextHolder, UserRepository userRepository, EventRepository eventRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, CommentMapper commentMapper, UserContextHolder userContextHolder, UserRepository userRepository, EventRepository eventRepository, EventMapper eventMapper) {
         this.commentRepository = commentRepository;
         this.commentMapper = commentMapper;
         this.userContextHolder = userContextHolder;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.eventMapper = eventMapper;
     }
 
 
@@ -63,9 +65,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto updateComment(CommentDto commentDto) {
-        //todo
-//first find and then get id from db and set to dto obj.
-        return commentMapper.fromCommentToCommentDto(commentRepository.save(commentMapper.fromCommentDtoToComment(commentDto)));
+        Comment comment = Comment.builder()
+                .description(commentDto.getDescription())
+                .dateOfCreation(commentDto.getDateOfCreation())
+                .event(eventMapper.fromEventDtoToEvent(commentDto.getEventDto()))
+                .user(userRepository.findByEmail(commentDto.getUserDto().getEmail()).orElseThrow(() -> new UserException("user not found")))
+                .id(commentDto.getId())
+                .build();
+        Comment savedComment = commentRepository.save(comment);
+
+        return commentMapper.fromCommentToCommentDto(savedComment);
     }
 
     @Override

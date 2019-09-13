@@ -65,7 +65,6 @@ public class EventController {
         model.addAttribute("title", title);
         model.addAttribute("type", type);
         return "eventResult";
-
     }
 
     @GetMapping("/search/event/{eventId}")

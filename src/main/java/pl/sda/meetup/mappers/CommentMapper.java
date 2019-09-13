@@ -18,19 +18,12 @@ public class CommentMapper {
         return CommentDto.builder()
                 .dateOfCreation(comment.getDateOfCreation())
                 .description(comment.getDescription())
-                .userLoginDto(userMapper.fromUserToUserLoginDto(comment.getUser()))
+                .userDto(userMapper.fromUserToUserDto(comment.getUser()))
                 .eventDto(eventMapper.fromEventToEventDto(comment.getEvent()))
                 .id(comment.getId())
                 .build();
 
     }
 
-    public Comment fromCommentDtoToComment(CommentDto commentDto) {
-        return Comment.builder()
-                .dateOfCreation(commentDto.getDateOfCreation())
-                .description(commentDto.getDescription())
-                .event(eventMapper.fromEventDtoToEvent(commentDto.getEventDto()))
-                .user(userMapper.fromUserLoginDtoToUser(commentDto.getUserLoginDto()))
-                .build();
-    }
 }
+

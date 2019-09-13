@@ -34,9 +34,9 @@ public class EventMapper {
                 .start(event.getStart())
                 .title(event.getTitle())
                 .participants(event.getParticipants().stream()
-                        .map(userMapper::fromUserToUserLoginDto)
+                        .map(userMapper::fromUserToUserDto)
                         .collect(Collectors.toSet()))
-                .userLoginDto(userMapper.fromUserToUserLoginDto(event.getUser()))
+                .userDto(userMapper.fromUserToUserDto(event.getUser()))
                 .build();
 
 

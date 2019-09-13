@@ -37,7 +37,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDto saveEvent(EventDto eventDto) {
         User userFromDB = userRepository.findByEmail(userContextHolder.getLoggedUserName())
-                .orElseThrow(() -> new UserException("usper not found"));
+                .orElseThrow(() -> new UserException("user not found"));
         Event event = eventMapper.fromEventDtoToEvent(eventDto);
         event.setUser(userFromDB);
         Set<User> participants = new HashSet<>();
