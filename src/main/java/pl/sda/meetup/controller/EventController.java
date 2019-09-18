@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.sda.meetup.services.EventContextHolder;
 import pl.sda.meetup.dto.EventDto;
 import pl.sda.meetup.services.CommentService;
 import pl.sda.meetup.services.EventService;
@@ -18,10 +19,12 @@ import java.util.List;
 public class EventController {
     private final EventService eventService;
     private final CommentService commentService;
+    private final EventContextHolder eventContextHolder;
 
-    public EventController(EventService eventService, CommentService commentService) {
+    public EventController(EventService eventService, CommentService commentService, EventContextHolder eventContextHolder) {
         this.eventService = eventService;
         this.commentService = commentService;
+        this.eventContextHolder = eventContextHolder;
     }
 
 
@@ -34,10 +37,15 @@ public class EventController {
 
     @PostMapping("/add-event")
     public String retrieveEventForm(@ModelAttribute("eventDto") @Valid EventDto eventDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "eventForm";
+        if (eventContextHolder.getEventId() != null) {
+            eventService.updateEvent(eventDto);
+        } else {
+            if (bindingResult.hasErrors()) {
+                return "eventForm";
+            }
+            EventDto eventDto1 = eventService.saveEvent(eventDto);
+            log.info("event saved id: " + eventDto1.getId());
         }
-        eventService.saveEvent(eventDto);
         return "redirect:/";
     }
 
@@ -85,9 +93,20 @@ public class EventController {
 
     }
 
+    @GetMapping("/edit/{eventId}")
+    public String prepareEditForm(@PathVariable Long eventId, Model model) {
+        EventDto eventToEdit = eventService.getEventById(eventId);
+        model.addAttribute("eventDto", eventToEdit);
+        log.info("id sended: " + eventToEdit.getId());
+        eventContextHolder.setEventId(eventId);
+        return "eventForm";
+    }
+
+
     private String prepareCommentsAndCheckIfUserIsParticipant(@PathVariable Long eventId, Model model) {
         model.addAttribute("comments", commentService.showAllComments(eventId));
         model.addAttribute("isParticipant", eventService.checkIfUserParticipant(eventId));
+        model.addAttribute("isUserOwner", eventService.checkIfUserIsOwner(eventId));
         return "eventView";
     }
 }

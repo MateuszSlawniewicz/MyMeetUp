@@ -25,12 +25,15 @@ public class EventServiceImpl implements EventService {
     private final EventMapper eventMapper;
     private final UserContextHolder userContextHolder;
     private final UserRepository userRepository;
+    private final EventContextHolder eventContextHolder;
 
-    public EventServiceImpl(EventRepository eventRepository, EventMapper eventMapper, UserRepository userRepository, UserContextHolder userContextHolder) {
+
+    public EventServiceImpl(EventRepository eventRepository, EventMapper eventMapper, UserRepository userRepository, UserContextHolder userContextHolder, EventContextHolder eventContextHolder) {
         this.eventRepository = eventRepository;
         this.eventMapper = eventMapper;
         this.userContextHolder = userContextHolder;
         this.userRepository = userRepository;
+        this.eventContextHolder = eventContextHolder;
     }
 
 
@@ -94,7 +97,6 @@ public class EventServiceImpl implements EventService {
         }
         if (eventDtos.isEmpty()) {
             throw new EventException("Event not found");
-            //prepare handler
         }
         return eventDtos.stream()
                 .filter(e -> e.getTitle().toLowerCase().contains(title.toLowerCase()))
@@ -107,7 +109,6 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(id)
                 .map(eventMapper::fromEventToEventDto)
                 .orElseThrow(() -> new EventException("event not found"));
-        //todo handler
     }
 
     @Override
@@ -142,5 +143,27 @@ public class EventServiceImpl implements EventService {
         participants.removeIf(e -> e.getEmail().equals(loggedUserName));
         event.setParticipants(participants);
         return eventMapper.fromEventToEventDto(eventRepository.save(event));
+    }
+
+    @Override
+    public Boolean checkIfUserIsOwner(Long eventId) {
+        return eventRepository.findById(eventId)
+                .map(this::checkIfUserEmailFromEventEqualsUserLoggedEmail)
+                .orElseThrow(() -> new EventException("Event not found"));
+    }
+
+    @Override
+    public EventDto updateEvent(EventDto eventDto) {
+        EventDto eventToSave = getEventById(eventContextHolder.getEventId());
+        eventToSave.setDescription(eventDto.getDescription());
+        eventToSave.setEnd(eventDto.getEnd());
+        eventToSave.setStart(eventDto.getStart());
+        eventToSave.setTitle(eventDto.getTitle());
+        eventToSave.setUserDto(eventDto.getUserDto());
+        return saveEvent(eventToSave);
+    }
+
+    private Boolean checkIfUserEmailFromEventEqualsUserLoggedEmail(Event e) {
+        return e.getUser().getEmail().equals(userContextHolder.getLoggedUserName());
     }
 }

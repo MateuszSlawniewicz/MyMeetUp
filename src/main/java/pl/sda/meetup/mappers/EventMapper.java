@@ -23,6 +23,7 @@ public class EventMapper {
                 .end(eventDto.getEnd())
                 .start(eventDto.getStart())
                 .title(eventDto.getTitle())
+                .id(eventDto.getId())
                 .build();
     }
 
@@ -33,6 +34,7 @@ public class EventMapper {
                 .end(event.getEnd())
                 .start(event.getStart())
                 .title(event.getTitle())
+                .id(event.getId())
                 .participants(event.getParticipants().stream()
                         .map(userMapper::fromUserToUserDto)
                         .collect(Collectors.toSet()))

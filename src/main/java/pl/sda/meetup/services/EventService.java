@@ -22,4 +22,8 @@ public interface EventService {
     EventDto saveParticipation(Long eventId);
 
     EventDto deleteParticipation(Long eventId);
+
+    Boolean checkIfUserIsOwner(Long eventId);
+
+    EventDto updateEvent(EventDto eventDto);
 }
